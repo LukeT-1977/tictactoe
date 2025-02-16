@@ -1,42 +1,123 @@
+<html>
 <head>
-    <script>
+    <style>
+        button {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
 
+    <script>
+        var a = [ // array to keep track of status of each square
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        var gameComplete = false;
+
+        function buttonClicked() {
+            if (gameComplete) {
+                return;
+            }
+
+            id = event.target.id
+            x = id.charAt(0);
+            y = id.charAt(1);
+            
+            if (a[x][y] == 0) {
+                document.getElementById(id).innerHTML = "X";
+                a[x][y] = 1;
+                console.log("User: " + id);
+                checkGame();
+                theirMove();
+            } else {
+                document.getElementById("moveIndicator").innerHTML = "Space already taken!";
+            }
+        }
+
+        function theirMove() {
+            if (gameComplete) {
+                return;
+            }
+
+            document.getElementById("moveIndicator").innerHTML = "Their move...";
+
+            do {
+                x = Math.floor(Math.random() * 3);
+                y = Math.floor(Math.random() * 3);
+                id = x + "" + y;
+                console.log("Trying " + id + "...");
+            } while (a[x][y] != 0) 
+
+            console.log("Computer: " + id);
+            document.getElementById(id).innerHTML = "O";
+            a[x][y] = -1;
+
+            checkGame();
+
+            document.getElementById("moveIndicator").innerHTML = "Your move...";
+            
+        }
+
+        function checkGame() {
+            for (i = 0; i < 3; i++) {
+                    if (a[i][0] == a[i][1] && a[i][1] == a[i][2] && a[i][0] != 0) {
+                        alert("Row victory for team " + a[i][0]);
+                        gameComplete = true;
+                    }
+                    if (a[0][i] == a[1][i] && a[1][i] == a[2][i] && a[0][i] != 0) {
+                        alert("Column victory for team " + a[0][i]);
+                        gameComplete = true;
+                    }
+                    if (a[0][0] == a[1][1] && a[1][1] == a[2][2] && a[0][0] != 0) {
+                        alert("Left-diagonal victory for team " + a[0][0]);
+                        gameComplete = true;
+                    }
+                    if (a[0][2] == a[1][1] && a[1][1] == a[2][0] && a[0][2] != 0) {
+                        alert("Right-diagonal victory for team " + a[0][2]);
+                        gameComplete = true;
+                    }
+            }
+        }
     </script>
+
 </head>
 
 <body>
+    <h1>Tic-Tac-Toe</h1>
+    <h3 id="moveIndicator">Your move...</h3>
     <table>
         <tr>
             <td>
-                <button></button>
+                <button id="00" onclick="buttonClicked()"></button>
             </td>
             <td>
-                <button></button>
+                <button id="01" onclick="buttonClicked()"></button>
             </td>            
             <td>
-                <button></button>
+                <button id="02" onclick="buttonClicked()"></button>
             </td>        
         </tr>
         <tr>
             <td>
-                <button></button>
+                <button id="10" onclick="buttonClicked()"></button>
             </td>            
             <td>
-                <button></button>
+                <button id="11" onclick="buttonClicked()"></button>
             </td>            
             <td>
-                <button></button>
+                <button id="12" onclick="buttonClicked()"></button>
             </td>        
         </tr>
         <tr>
             <td>
-                <button></button>
+                <button id="20" onclick="buttonClicked()"></button>
             </td>            
             <td>
-                <button></button>
+                <button id="21" onclick="buttonClicked()"></button>
             </td>            
             <td>
-                <button></button>
+                <button id="22" onclick="buttonClicked()"></button>
             </td>        
         </tr>
     </table>
