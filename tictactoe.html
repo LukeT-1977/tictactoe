@@ -29,15 +29,18 @@
     </style>
 
     <script>
+        var winner = 0;
+        var turns = 0;
+
         var a = [ // array to keep track of status of each square
             [0, 0, 0],
             [0, 0, 0],
             [0, 0, 0]
         ];
-        var gameComplete = false;
+        var gameOver = false;
 
         function buttonClicked() {
-            if (gameComplete) {
+            if (gameOver) {
                 return;
             }
 
@@ -49,15 +52,21 @@
                 document.getElementById(id).innerHTML = "X";
                 a[x][y] = 1;
                 console.log("User: " + id);
-                checkGame();
-                theirMove();
+                turns++;
+                winner = checkGame();
+                if (!winner) { theirMove(); }
+                else { declareVictory(winner); }
             } else {
                 document.getElementById("moveIndicator").innerHTML = "Space already taken!";
             }
         }
 
         function theirMove() {
-            if (gameComplete) {
+            if (turns == 9) {
+                document.getElementById("moveIndicator").innerHTML = "Stalemate!";
+                gameOver = true;
+            }
+            if (gameOver) {
                 return;
             }
 
@@ -76,13 +85,15 @@
             x = id.charAt(0);
             y = id.charAt(1);
 
+            turns++;
             console.log("Computer: " + id);
             document.getElementById(id).innerHTML = "O";
             a[x][y] = -1;
 
-            checkGame();
+            winner = checkGame();
 
-            document.getElementById("moveIndicator").innerHTML = "Your move...";
+            if (!winner) { document.getElementById("moveIndicator").innerHTML = "Your move..."; }
+            else { declareVictory(winner); }
             
         }
 
@@ -154,21 +165,35 @@
         function checkGame() {
             for (i = 0; i < 3; i++) {
                     if (a[i][0] == a[i][1] && a[i][1] == a[i][2] && a[i][0] != 0) {
-                        alert("Row victory for team " + a[i][0]);
-                        gameComplete = true;
+                        console.log("Row victory for team " + a[i][0]);
+                        gameOver = true;
+                        return (a[i][0]);
                     }
                     if (a[0][i] == a[1][i] && a[1][i] == a[2][i] && a[0][i] != 0) {
-                        alert("Column victory for team " + a[0][i]);
-                        gameComplete = true;
+                        console.log("Column victory for team " + a[0][i]);
+                        gameOver = true;
+                        return (a[0][i]);
                     }
             }
             if (a[0][0] == a[1][1] && a[1][1] == a[2][2] && a[0][0] != 0) {
-                alert("Left-diagonal victory for team " + a[0][0]);
-                gameComplete = true;
+                console.log("Left-diagonal victory for team " + a[0][0]);
+                gameOver = true;
+                return (a[0][0]);
             }
             if (a[0][2] == a[1][1] && a[1][1] == a[2][0] && a[0][2] != 0) {
-                alert("Right-diagonal victory for team " + a[0][2]);
-                gameComplete = true;
+                console.log("Right-diagonal victory for team " + a[0][2]);
+                gameOver = true;
+                return a[0][2];
+            }
+            return 0;
+        }
+
+        function declareVictory(victor) {
+            if (victor == 1) {
+                document.getElementById("moveIndicator").innerHTML = "You won!";
+            }
+            if (victor == -1) {
+                document.getElementById("moveIndicator").innerHTML = "You lost!";
             }
         }
     </script>
@@ -215,5 +240,4 @@
     </table>
     <br>
     <button onclick="window.location.reload()" id="button">Reload</button>
-    <button onclick="theirMove()" id="button">Skip</button>
 </body>
